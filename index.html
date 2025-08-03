@@ -1,135 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Cripher Simple Password Generator</title>
-  <style>
-    :root {
-      --bg-color: #ffffff;
-      --text-color: #000000;
-      --card-bg: #f9f9f9;
-      --border-color: #ddd;
-      --estimate-color: #555;
-    }
-
-    body.dark {
-      --bg-color: #1e1e1e;
-      --text-color: #f1f1f1;
-      --card-bg: #2e2e2e;
-      --border-color: #444;
-      --estimate-color: #aaa;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 40px;
-      transition: background 0.3s, color 0.3s;
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-
-    button {
-      margin-top: 20px;
-    }
-
-    #passwords-list {
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .password-card {
-      background-color: var(--card-bg);
-      padding: 15px 20px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-width: 300px;
-      max-width: 90%;
-      width: fit-content;
-      word-break: break-word;
-      white-space: pre-wrap;
-    }
-
-    .password {
-      font-weight: bold;
-      font-family: monospace;
-      overflow-wrap: anywhere;
-      white-space: pre-wrap;
-      margin-right: 10px;
-    }
-
-    .copy-icon, .toggle-icon {
-      cursor: pointer;
-      font-size: 18px;
-      margin-left: 5px;
-    }
-
-    #strength {
-      margin-top: 20px;
-      height: 10px;
-      width: 100%;
-      background-color: #eee;
-    }
-
-    #strength-bar {
-      height: 100%;
-      width: 0%;
-      background-color: red;
-      transition: width 0.3s;
-    }
-
-    #strength-label {
-      margin-top: 5px;
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .top-controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    #crack-time-estimate {
-      margin-top: 10px;
-      text-align: center;
-      font-weight: bold;
-      color: var(--estimate-color);
-    }
-
-    #speed-selector {
-      margin-top: 10px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <title>Password Generator</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="top-controls">
-    <h1>Cripher Simple Password Generator</h1>
+    <h1>Password Generator</h1>
     <label>
       <input type="checkbox" id="dark-toggle" onchange="toggleDarkMode()"> 🌙 Dark Mode
     </label>
   </div>
 
-  <label>
-    Password Length:
-    <input type="number" id="length" min="1" value="12">
-  </label>
-  <label>
-    Number of Passwords:
-    <input type="number" id="count" min="1" value="1">
-  </label>
+  <label>Password Length: <input type="number" id="length" min="1" value="12"></label>
+  <label>Number of Passwords: <input type="number" id="count" min="1" value="1"></label>
   <label><input type="checkbox" id="lowercase" checked> Include Lowercase Letters</label>
   <label><input type="checkbox" id="uppercase" checked> Include Uppercase Letters</label>
   <label><input type="checkbox" id="numbers" checked> Include Numbers</label>
@@ -148,154 +33,10 @@
 
   <div id="passwords-list"></div>
 
-  <div id="strength">
-    <div id="strength-bar"></div>
-  </div>
+  <div id="strength"><div id="strength-bar"></div></div>
   <div id="strength-label"></div>
   <div id="crack-time-estimate"></div>
 
-  <script>
-    function generatePasswords() {
-      const length = parseInt(document.getElementById('length').value);
-      const count = parseInt(document.getElementById('count').value);
-      const includeLower = document.getElementById('lowercase').checked;
-      const includeUpper = document.getElementById('uppercase').checked;
-      const includeNumbers = document.getElementById('numbers').checked;
-      const includeSpecial = document.getElementById('special').checked;
-
-      let charset = '';
-      if (includeLower) charset += 'abcdefghijklmnopqrstuvwxyz';
-      if (includeUpper) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      if (includeNumbers) charset += '0123456789';
-      if (includeSpecial) charset += '!@#$%^&*()_+[]{}|;:,.<>?';
-
-      const container = document.getElementById('passwords-list');
-      if (charset === '') {
-        alert('Please select at least one character type.');
-        return;
-      }
-
-      container.innerHTML = '';
-
-      for (let i = 0; i < count; i++) {
-        let password = '';
-        for (let j = 0; j < length; j++) {
-          const randomChar = charset.charAt(Math.floor(Math.random() * charset.length));
-          password += randomChar;
-        }
-
-        const card = document.createElement('div');
-        card.className = 'password-card';
-
-        const passDiv = document.createElement('div');
-        passDiv.className = 'password';
-        passDiv.textContent = password;
-
-        const copyIcon = document.createElement('span');
-        copyIcon.className = 'copy-icon';
-        copyIcon.textContent = '📋';
-        copyIcon.onclick = () => copyToClipboard(password);
-
-        const toggleIcon = document.createElement('span');
-        toggleIcon.className = 'toggle-icon';
-        toggleIcon.textContent = '👁️';
-        toggleIcon.onclick = () => {
-          if (passDiv.textContent === password) {
-            passDiv.textContent = '*'.repeat(password.length);
-          } else {
-            passDiv.textContent = password;
-          }
-        };
-
-        card.appendChild(passDiv);
-        card.appendChild(toggleIcon);
-        card.appendChild(copyIcon);
-        container.appendChild(card);
-      }
-
-      evaluateStrength(length, charset);
-    }
-
-    function copyToClipboard(password) {
-      navigator.clipboard.writeText(password).then(() => {
-        alert('Password copied to clipboard!');
-      });
-    }
-
-    function evaluateStrength(length, charset) {
-      let strength = 0;
-      if (length >= 8) strength++;
-      if (/[a-z]/.test(charset)) strength++;
-      if (/[A-Z]/.test(charset)) strength++;
-      if (/[0-9]/.test(charset)) strength++;
-      if (/[^a-zA-Z0-9]/.test(charset)) strength++;
-
-      const bar = document.getElementById('strength-bar');
-      const label = document.getElementById('strength-label');
-      const percent = Math.min(strength * 20, 100);
-      bar.style.width = percent + '%';
-
-      if (percent <= 20) {
-        bar.style.backgroundColor = 'red';
-        label.innerText = 'Very Weak';
-        label.style.color = 'red';
-      } else if (percent <= 40) {
-        bar.style.backgroundColor = 'orangered';
-        label.innerText = 'Weak';
-        label.style.color = 'orangered';
-      } else if (percent <= 60) {
-        bar.style.backgroundColor = 'orange';
-        label.innerText = 'Moderate';
-        label.style.color = 'orange';
-      } else if (percent <= 80) {
-        bar.style.backgroundColor = 'yellowgreen';
-        label.innerText = 'Strong';
-        label.style.color = 'yellowgreen';
-      } else {
-        bar.style.backgroundColor = 'green';
-        label.innerText = 'Very Strong';
-        label.style.color = 'green';
-      }
-
-      // Estimate crack time
-      const speed = parseFloat(document.getElementById('speed').value); // attacker speed
-      const charsetSize = charset.length;
-      const totalCombos = BigInt(Math.pow(charsetSize, length));
-      const seconds = totalCombos / BigInt(speed);
-      const readableTime = formatTime(seconds);
-      updateCrackEstimate(`Estimated crack time: ${readableTime}`);
-    }
-
-    function formatTime(secondsBigInt) {
-      const seconds = Number(secondsBigInt);
-      if (seconds === Infinity || isNaN(seconds)) return "∞ (uncrackable)";
-      if (seconds < 1) return "Less than 1 second";
-
-      const units = [
-        { label: "year", value: 31536000 },
-        { label: "day", value: 86400 },
-        { label: "hour", value: 3600 },
-        { label: "minute", value: 60 },
-        { label: "second", value: 1 }
-      ];
-
-      for (const unit of units) {
-        const count = Math.floor(seconds / unit.value);
-        if (count >= 1) {
-          return `${count.toLocaleString()} ${unit.label}${count > 1 ? 's' : ''}`;
-        }
-      }
-      return `${seconds} seconds`;
-    }
-
-    function updateCrackEstimate(text) {
-      const estimate = document.getElementById('crack-time-estimate');
-      estimate.textContent = text;
-    }
-
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark');
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
