@@ -2,41 +2,154 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Secure, offline-capable password generator with customizable options" />
+  <meta name="theme-color" content="#007bff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.json" />
   <title>Cripher Simple Password Generator</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="top-controls">
-    <h1>Cripher Simple Password Generator</h1>
-    <label>
-      <input type="checkbox" id="dark-toggle" onchange="toggleDarkMode()"> 🌙 Dark Mode
-    </label>
+    <h1>🔐 Cripher Simple Password Generator</h1>
+    <div class="top-right-controls">
+      <label title="Save settings automatically">
+        <input type="checkbox" id="dark-toggle" onchange="toggleDarkMode()"> 🌙
+      </label>
+      <button class="icon-btn" title="Clear history" onclick="clearHistory()">🗑️</button>
+      <button class="icon-btn" title="Export passwords" onclick="toggleExportMenu()">⬇️</button>
+    </div>
   </div>
 
-  <label>Password Length: <input type="number" id="length" min="1" value="12"></label>
-  <label>Number of Passwords: <input type="number" id="count" min="1" value="1"></label>
-  <label><input type="checkbox" id="lowercase" checked> Include Lowercase Letters</label>
-  <label><input type="checkbox" id="uppercase" checked> Include Uppercase Letters</label>
-  <label><input type="checkbox" id="numbers" checked> Include Numbers</label>
-  <label><input type="checkbox" id="special" checked> Include Special Characters</label>
+  <!-- Password Configuration Section -->
+  <div class="settings-section">
+    <h3>Generator Type:</h3>
+    <div class="button-tabs">
+      <button class="tab-btn active" onclick="setGeneratorType('password')" data-type="password">Password</button>
+      <button class="tab-btn" onclick="setGeneratorType('passphrase')" data-type="passphrase">Passphrase</button>
+    </div>
+  </div>
 
-  <label id="speed-selector">
-    Attacker Speed:
+  <!-- Preset Templates Section -->
+  <div class="settings-section">
+    <h3>Quick Presets:</h3>
+    <div class="button-group-inline">
+      <button class="preset-btn" onclick="applyPreset('weak')">Weak</button>
+      <button class="preset-btn" onclick="applyPreset('medium')">Medium</button>
+      <button class="preset-btn" onclick="applyPreset('strong')">Strong</button>
+      <button class="preset-btn" onclick="applyPreset('verystrong')">Very Strong</button>
+    </div>
+  </div>
+
+  <!-- Password Configuration Section -->
+  <div class="settings-section" id="password-config">
+    <h3>Password Settings:</h3>
+    <div class="setting-input">
+      <label for="length">Length (8-128):</label>
+      <input type="number" id="length" min="8" max="128" value="16">
+      <span id="length-display">16</span>
+    </div>
+
+    <div class="setting-input">
+      <label for="count">Generate:</label>
+      <input type="number" id="count" min="1" max="10" value="5">
+    </div>
+  </div>
+
+  <!-- Passphrase Settings -->
+  <div class="settings-section" id="passphrase-config" style="display:none;">
+    <h3>Passphrase Settings:</h3>
+    <div class="setting-input">
+      <label for="passphrase-words">Number of Words:</label>
+      <input type="number" id="passphrase-words" min="2" max="8" value="4">
+    </div>
+    <div class="setting-input">
+      <label for="passphrase-separator">Separator:</label>
+      <select id="passphrase-separator">
+        <option value="-">Hyphen (-)</option>
+        <option value=" ">Space ( )</option>
+        <option value="_">Underscore (_)</option>
+        <option value=".">Period (.)</option>
+      </select>
+    </div>
+    <label><input type="checkbox" id="passphrase-capitalize"> Capitalize First Letter</label>
+    <label><input type="checkbox" id="passphrase-number"> Add Random Number</label>
+  </div>
+
+  <!-- Character Type Options -->
+  <div class="settings-section" id="charset-section">
+    <h3>Character Types:</h3>
+    <label><input type="checkbox" id="lowercase" checked> Lowercase (a-z)</label>
+    <label><input type="checkbox" id="uppercase" checked> Uppercase (A-Z)</label>
+    <label><input type="checkbox" id="numbers" checked> Numbers (0-9)</label>
+    <label><input type="checkbox" id="special" checked> Special (!@#$...)</label>
+    <label><input type="checkbox" id="exclude-ambiguous"> Exclude Ambiguous (O,0,l,1,I)</label>
+    <button class="collapsible-toggle" onclick="toggleCustomCharset()">⚙️ Custom Character Set</button>
+    <div id="custom-charset-section" style="display:none; margin-top:10px;">
+      <label for="custom-charset">Custom Characters:</label>
+      <input type="text" id="custom-charset" placeholder="Add or remove characters to use" />
+      <small>Leave empty to use standard selections</small>
+    </div>
+  </div>
+
+  <!-- Attack Speed for Crack Time Estimation -->
+  <div class="settings-section">
+    <label for="speed">Attacker Speed:</label>
     <select id="speed">
-      <option value="1000000">Slow Desktop (1 million guesses/sec)</option>
-      <option value="10000000000" selected>Fast GPU (10 billion guesses/sec)</option>
-      <option value="100000000000000">Supercomputer (100 trillion guesses/sec)</option>
+      <option value="1000000">Slow Desktop (1M guesses/sec)</option>
+      <option value="10000000000" selected>Fast GPU (10B guesses/sec)</option>
+      <option value="100000000000000">Supercomputer (100T guesses/sec)</option>
     </select>
-  </label>
+  </div>
 
-  <button onclick="generatePasswords()">Generate Passwords</button>
+  <!-- Generate and Copy All Buttons -->
+  <div class="button-group">
+    <button onclick="generatePasswords()" class="btn-primary">Generate</button>
+    <button onclick="copyAllPasswords()" class="btn-secondary" id="copy-all-btn" style="display:none;">Copy All</button>
+    <button onclick="toggleExportMenu()" class="btn-secondary" id="export-btn" style="display:none;">Export</button>
+  </div>
 
+  <!-- Export Menu -->
+  <div id="export-menu" class="export-menu" style="display:none;">
+    <button onclick="exportPasswords('txt')">📄 Download as TXT</button>
+    <button onclick="exportPasswords('csv')">📊 Download as CSV</button>
+    <button onclick="exportPasswords('json')">{ } Download as JSON</button>
+  </div>
+
+  <!-- Strength Indicator -->
+  <div id="strength-container" style="display:none;">
+    <div id="strength"><div id="strength-bar"></div></div>
+    <div id="strength-label"></div>
+    <div id="entropy-display"></div>
+    <div id="crack-time-estimate"></div>
+  </div>
+
+  <!-- Passwords Display -->
   <div id="passwords-list"></div>
 
-  <div id="strength"><div id="strength-bar"></div></div>
-  <div id="strength-label"></div>
-  <div id="crack-time-estimate"></div>
+  <!-- Password History Section -->
+  <div id="history-section" style="display:none;">
+    <h3>History (Last 10):
+      <button class="small-btn" onclick="clearHistory()">Clear</button>
+    </h3>
+    <div id="history-list"></div>
+  </div>
 
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="wordlist.js"></script>
   <script src="script.js"></script>
+  <script>
+    // Register service worker for PWA support
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(() => {
+        // Service worker registration failed - app still works in browser
+      });
+    }
+  </script>
 </body>
 </html>
+

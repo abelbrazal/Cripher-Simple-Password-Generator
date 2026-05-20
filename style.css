@@ -4,6 +4,12 @@
   --card-bg: #f9f9f9;
   --border-color: #ddd;
   --estimate-color: #555;
+  --input-bg: #f5f5f5;
+  --primary-color: #007bff;
+  --primary-hover: #0056b3;
+  --success-color: #28a745;
+  --error-color: #dc3545;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 body.dark {
@@ -12,97 +18,634 @@ body.dark {
   --card-bg: #2e2e2e;
   --border-color: #444;
   --estimate-color: #aaa;
+  --input-bg: #333;
+  --primary-color: #0d6efd;
+  --primary-hover: #0a58ca;
+  --shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
-  margin: 40px;
+  margin: 0;
+  padding: 20px;
   transition: background 0.3s, color 0.3s;
-}
-
-label {
-  display: block;
-  margin-top: 10px;
-}
-
-button {
-  margin-top: 20px;
-}
-
-#passwords-list {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-}
-
-.password-card {
-  background-color: var(--card-bg);
-  padding: 15px 20px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-width: 300px;
-  max-width: 90%;
-  width: fit-content;
-  word-break: break-word;
-  white-space: pre-wrap;
-}
-
-.password {
-  font-weight: bold;
-  font-family: monospace;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-  margin-right: 10px;
-}
-
-.copy-icon, .toggle-icon {
-  cursor: pointer;
-  font-size: 18px;
-  margin-left: 5px;
-}
-
-#strength {
-  margin-top: 20px;
-  height: 10px;
-  width: 100%;
-  background-color: #eee;
-}
-
-#strength-bar {
-  height: 100%;
-  width: 0%;
-  background-color: red;
-  transition: width 0.3s;
-}
-
-#strength-label {
-  margin-top: 5px;
-  font-weight: bold;
-  text-align: center;
 }
 
 .top-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.top-controls h1 {
+  margin: 0;
+  font-size: 2em;
+  font-weight: 700;
+}
+
+.top-right-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.top-right-controls label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  cursor: pointer;
+  font-size: 1.5em;
+}
+
+.icon-btn {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.2em;
+  transition: all 0.2s;
+}
+
+.icon-btn:hover {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.settings-section {
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 8px;
   margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
 }
 
-#crack-time-estimate {
-  margin-top: 10px;
-  text-align: center;
+.settings-section h3 {
+  margin: 0 0 15px 0;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+/* Tabs for generator type selection */
+.button-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: 2px solid var(--border-color);
+  background-color: transparent;
+  color: var(--text-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  border-color: var(--primary-color);
+}
+
+.tab-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* Inline button groups for presets */
+.button-group-inline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+}
+
+.preset-btn {
+  padding: 10px 16px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.preset-btn:hover {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.setting-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.setting-input label {
+  margin: 0;
+  min-width: 150px;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.setting-input input[type="number"],
+.setting-input select {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  font-size: 1em;
+  min-width: 100px;
+  max-width: 150px;
+}
+
+.setting-input #length-display {
   font-weight: bold;
-  color: var(--estimate-color);
+  font-size: 1.2em;
+  color: var(--primary-color);
+  min-width: 40px;
 }
 
-#speed-selector {
+label {
+  display: block;
   margin-top: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+label input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+select {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 0.95em;
+}
+
+.collapsible-toggle {
+  display: block;
+  background-color: var(--input-bg);
+  border: none;
+  padding: 10px 12px;
+  margin-top: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: left;
+}
+
+.collapsible-toggle:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+#custom-charset-section {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: var(--input-bg);
+  border-radius: 4px;
+}
+
+#custom-charset-section input[type="text"] {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-top: 8px;
+  font-family: monospace;
+}
+
+#custom-charset-section small {
+  display: block;
+  margin-top: 8px;
+  color: var(--estimate-color);
+  font-size: 0.85em;
+}
+
+/* Button groups */
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 1em;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  background-color: var(--border-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--card-bg);
+}
+
+.small-btn {
+  padding: 6px 12px;
+  font-size: 0.85em;
+  margin: 0;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.small-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Export menu */
+.export-menu {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.export-menu button {
+  width: 100%;
+  text-align: left;
+  background-color: var(--input-bg);
+  padding: 10px 12px;
+  margin: 0;
+  border-radius: 4px;
+}
+
+.export-menu button:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Strength indicator */
+#strength-container {
+  margin-bottom: 30px;
+}
+
+#strength {
+  height: 12px;
+  width: 100%;
+  background-color: #eee;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  margin-bottom: 10px;
+}
+
+#strength-bar {
+  height: 100%;
+  width: 0%;
+  background-color: red;
+  transition: width 0.3s ease;
+}
+
+#strength-label {
+  margin-bottom: 10px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.1em;
+}
+
+#entropy-display,
+#crack-time-estimate {
+  text-align: center;
+  font-weight: 500;
+  color: var(--estimate-color);
+  font-size: 0.95em;
+  margin: 8px 0;
+}
+
+/* Passwords list */
+#passwords-list {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.password-card {
+  background-color: var(--card-bg);
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  word-break: break-all;
+  transition: all 0.2s;
+}
+
+.password-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 123, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.password {
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  flex: 1;
+  margin-right: 12px;
+  word-break: break-all;
+}
+
+.password-card-icons {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.copy-icon,
+.toggle-icon,
+.regenerate-icon {
+  cursor: pointer;
+  font-size: 1.3em;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.copy-icon:hover,
+.toggle-icon:hover,
+.regenerate-icon:hover {
+  transform: scale(1.25);
+  color: var(--primary-color);
+}
+
+.copy-icon:active,
+.toggle-icon:active,
+.regenerate-icon:active {
+  transform: scale(0.95);
+}
+
+/* Password History */
+#history-section {
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 30px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#history-section h3 {
+  margin: 0 0 15px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.history-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 8px;
+  background-color: var(--input-bg);
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.history-time {
+  font-weight: 600;
+  color: var(--primary-color);
+  min-width: 80px;
+}
+
+.history-passwords {
+  flex: 1;
+  word-break: break-word;
+  font-family: monospace;
+  font-size: 0.85em;
+}
+
+.history-item button {
+  margin: 0;
+  padding: 6px 12px;
+  font-size: 0.85em;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--success-color);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(100px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  max-width: 300px;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast.error {
+  background-color: var(--error-color);
+}
+
+/* Accessibility improvements */
+input[type="checkbox"]:focus,
+input[type="number"]:focus,
+select:focus,
+button:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Responsive design for tablets and phones */
+@media (max-width: 768px) {
+  body {
+    padding: 12px;
+  }
+
+  .top-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .top-controls h1 {
+    font-size: 1.5em;
+  }
+
+  .top-right-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .setting-input {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .setting-input label {
+    min-width: auto;
+    margin-bottom: 5px;
+  }
+
+  .setting-input input[type="number"],
+  .setting-input select {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .button-group button {
+    width: 100%;
+  }
+
+  .button-tabs {
+    flex-direction: column;
+  }
+
+  .button-group-inline {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .password-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .password {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .password-card-icons {
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .history-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .history-time {
+    min-width: auto;
+  }
+
+  .toast {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-controls h1 {
+    font-size: 1.2em;
+  }
+
+  .settings-section {
+    padding: 15px;
+  }
+
+  button {
+    padding: 10px 16px;
+    font-size: 0.95em;
+  }
+
+  .password-card {
+    padding: 12px;
+  }
+
+  .copy-icon,
+  .toggle-icon,
+  .regenerate-icon {
+    font-size: 1.1em;
+  }
+}
+
+/* Print styles for password export */
+@media print {
+  .top-controls,
+  .settings-section,
+  .button-group,
+  #history-section,
+  .icon-btn {
+    display: none;
+  }
+
+  .password-card {
+    page-break-inside: avoid;
+    border: 1px solid #000;
+  }
 }
