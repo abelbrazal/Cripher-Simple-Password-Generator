@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cripher Simple Password Generator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="top-controls">
+    <h1>Cripher Simple Password Generator</h1>
+    <label>
+      <input type="checkbox" id="dark-toggle" onchange="toggleDarkMode()"> 🌙 Dark Mode
+    </label>
+  </div>
+
+  <label>Password Length: <input type="number" id="length" min="1" value="12"></label>
+  <label>Number of Passwords: <input type="number" id="count" min="1" value="1"></label>
+  <label><input type="checkbox" id="lowercase" checked> Include Lowercase Letters</label>
+  <label><input type="checkbox" id="uppercase" checked> Include Uppercase Letters</label>
+  <label><input type="checkbox" id="numbers" checked> Include Numbers</label>
+  <label><input type="checkbox" id="special" checked> Include Special Characters</label>
+
+  <label id="speed-selector">
+    Attacker Speed:
+    <select id="speed">
+      <option value="1000000">Slow Desktop (1 million guesses/sec)</option>
+      <option value="10000000000" selected>Fast GPU (10 billion guesses/sec)</option>
+      <option value="100000000000000">Supercomputer (100 trillion guesses/sec)</option>
+    </select>
+  </label>
+
+  <button onclick="generatePasswords()">Generate Passwords</button>
+
+  <div id="passwords-list"></div>
+
+  <div id="strength"><div id="strength-bar"></div></div>
+  <div id="strength-label"></div>
+  <div id="crack-time-estimate"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
