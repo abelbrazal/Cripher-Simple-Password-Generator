@@ -1,0 +1,17 @@
+# Ignore build output folders
+**/bin/
+**/obj/
+
+# Ignore Visual Studio workspace files
+**/.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ignore NuGet packages
+**/packages/
+
+# Ignore temporary files
+*.tmp
+*.log
