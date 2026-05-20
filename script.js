@@ -268,6 +268,10 @@ function generatePassphrases() {
 function renderPasswordCard(password, charset) {
   const card = document.createElement('div');
   card.className = 'password-card';
+  // mark if this is restored from history (charset is empty)
+  if (charset === '') {
+    card.setAttribute('data-restored', 'true');
+  }
 
   const passDiv = document.createElement('div');
   passDiv.className = 'password';
@@ -293,8 +297,16 @@ function renderPasswordCard(password, charset) {
   const regenerateIcon = document.createElement('span');
   regenerateIcon.className = 'regenerate-icon';
   regenerateIcon.textContent = '🔄';
-  regenerateIcon.title = 'Regenerate';
-  regenerateIcon.onclick = () => regeneratePassword(card, charset);
+  // disable regenerate for restored history since we don't have charset info
+  if (charset === '') {
+    regenerateIcon.style.opacity = '0.5';
+    regenerateIcon.style.cursor = 'not-allowed';
+    regenerateIcon.title = 'Regenerate (restored history - re-generate to create new)';
+    regenerateIcon.onclick = () => showToast('Generate new passwords to get editable results', 'error');
+  } else {
+    regenerateIcon.title = 'Regenerate';
+    regenerateIcon.onclick = () => regeneratePassword(card, charset);
+  }
 
   iconsContainer.appendChild(toggleIcon);
   iconsContainer.appendChild(copyIcon);
